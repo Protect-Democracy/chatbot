@@ -1,5 +1,5 @@
 const { OpenAI } = require('openai');
-const tokenService = require('./tokenService');
+const authService = require('./authService');
 
 class ChatService {
   constructor() {
@@ -30,13 +30,16 @@ class ChatService {
 
   async getClient() {
     try {
-      console.log('Getting access token...');
-      tokenService.initialize(); // Initialize TokenService
-      const accessToken = await tokenService.ensureValidToken();
-      console.log('Got access token, creating OpenAI client...');
+      console.log('Getting API key...');
+      const apiKey = await authService.getApiKey();
+      console.log('Got API key, creating OpenAI client...');
+      
       return new OpenAI({
         baseURL: this.AGENT_ENDPOINT,
-        apiKey: accessToken,
+        apiKey: apiKey,
+        defaultHeaders: {
+          'Content-Type': 'application/json'
+        }
       });
     } catch (error) {
       console.error('Error creating OpenAI client:', {
@@ -168,7 +171,7 @@ class ChatService {
       if (error.status === 401 && !isRetry) {
         console.log('Got 401 error, attempting token refresh...');
         try {
-          await tokenService.ensureValidToken();
+          await authService.ensureValidToken();
           console.log('Token refreshed, retrying message...');
           return this.sendMessage(message, sessionId, true);
         } catch (refreshError) {

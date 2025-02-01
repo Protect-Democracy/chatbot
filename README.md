@@ -1,21 +1,16 @@
 # Custom Chatbot Sample Application
 
-This sample application demonstrates how to build a modern chat interface using DigitalOcean's GenAI Platform. It features real-time streaming responses, WebSocket communication, and proper token management for API authentication.
+This sample application demonstrates how to build a modern chat interface using DigitalOcean's GenAI Platform. It features real-time streaming responses, WebSocket communication, and proper authentication.
 
 ## Architecture
 
-### Token Service
+### Authentication Service
 
-The `TokenService` handles authentication with the DigitalOcean GenAI Platform using a two-token system:
+The `AuthService` handles authentication with the DigitalOcean GenAI Platform:
 
-1. **Refresh Token**: A long-lived token obtained using your Agent ID and Key
-2. **Access Token**: A short-lived JWT token used for API calls
-
-The service automatically:
-- Manages token lifecycle
-- Refreshes expired tokens
-- Validates token expiry
-- Handles error cases and retries
+- Validates required environment variables
+- Manages the Agent Access Key securely
+- Provides the key for API authentication
 
 ### Chat Service
 
@@ -26,6 +21,14 @@ The `ChatService` manages the chat functionality:
 - Manages chat sessions and conversation history
 - Processes incoming messages and outgoing responses
 
+### Session Management
+
+The application uses Express Session middleware for secure session handling:
+- Authenticates WebSocket connections using session IDs
+- Maintains user state across page refreshes
+- Protects against session hijacking and tampering
+- Uses SESSION_SECRET to sign and encrypt session data
+
 ## Setup
 
 ### Prerequisites
@@ -34,8 +37,8 @@ The `ChatService` manages the chat functionality:
 - npm
 - A DigitalOcean GenAI Platform account with:
   - An Agent ID
-  - An Agent Key
-  - An Agent Endpoint
+  - An Agent Key (found in Settings > Endpoint Access Keys)
+  - An Agent Endpoint URL
 
 ### Environment Variables
 
@@ -46,14 +49,23 @@ Create a `.env` file in the root directory:
 PORT=3000
 
 # Required environment variables
-API_BASE=https://cluster-api.do-ai.run/v1
-AGENT_ID=your-agent-id
-AGENT_KEY=your-agent-key
-AGENT_ENDPOINT=your-agent-endpoint
-SESSION_SECRET=your-session-secret
+AGENT_ID=your-agent-id            # From your Agent's settings
+AGENT_KEY=your-agent-key         # Created in Settings > Endpoint Access Keys
+AGENT_ENDPOINT=your-agent-endpoint # Your agent's endpoint URL (must end with /api/v1/)
+SESSION_SECRET=your-secret-key    # Long random string for session security
 ```
 
-**Note**: When deploying to DigitalOcean App Platform, do not set the `PORT` environment variable as it is automatically managed by the platform.
+**Important Notes:**
+1. The `SESSION_SECRET` should be:
+   - A long, random string (at least 32 characters recommended)
+   - Different between development and production environments
+   - Kept secret and never committed to version control
+   - Changed if potentially compromised
+
+2. When deploying to DigitalOcean App Platform:
+   - Do not set the `PORT` variable (managed automatically)
+   - Set a strong `SESSION_SECRET` in the environment variables
+   - Keep the `SESSION_SECRET` consistent across app instances
 
 ### Installation
 
@@ -96,29 +108,19 @@ To deploy this application on DigitalOcean:
 
 2. **GenAI Platform Requirements**:
    - Create an AI Agent in your DigitalOcean account
-   - Configure the agent endpoint visibility (public/private)
-     - Private endpoints require access keys for authentication
-     - Public endpoints are accessible via the internet
-   - Copy the required credentials to your environment variables:
-     - `AGENT_ID`: Your agent's unique identifier
-     - `AGENT_KEY`: Your agent's access key
-     - `AGENT_ENDPOINT`: Your agent's endpoint URL (must end with `/api/v1/`)
+   - Navigate to Settings > Endpoint Access Keys
+   - Create a new access key and copy it to your environment variables
+   - Copy the Agent ID and Endpoint URL from the agent settings
 
 For detailed instructions on setting up and using AI Agents, please refer to:
-- [DigitalOcean GenAI Platform Documentation](https://docs.digitalocean.com/products/genai-platform/how-to/manage-ai-agent/use-agent/) - Learn about managing agents, endpoints, and access keys
-- [Early Access Documentation](https://docs.digitalocean.com/products/genai-platform/) - Get the latest updates on the GenAI Platform
-
-**Note**: This application implements the token-based authentication flow required for private endpoints, including:
-- Obtaining and managing refresh tokens
-- Handling access token lifecycle
-- Automatic token refresh
-- Error handling and retries
+- [DigitalOcean GenAI Platform Documentation](https://docs.digitalocean.com/products/genai-platform/)
+- [How to Use Agents Documentation](https://docs.digitalocean.com/products/genai-platform/how-to/manage-ai-agent/use-agent/)
 
 ## Features
 
 - Real-time streaming responses
 - WebSocket-based communication
-- Secure token management
+- Secure authentication
 - Session persistence
 - Markdown support in chat
 - Code syntax highlighting
@@ -131,7 +133,7 @@ For detailed instructions on setting up and using AI Agents, please refer to:
 - Always use a strong `SESSION_SECRET`
 - The application validates all required environment variables on startup
 - WebSocket connections are authenticated using session IDs
-- Tokens are managed securely in memory
+- Access tokens are managed securely in memory
 
 ## License
 
