@@ -7,7 +7,7 @@ class AuthService {
     }
 
     validateConfig() {
-        const required = ['AGENT_ID', 'AGENT_KEY', 'AGENT_ENDPOINT'];
+        const required = ['AGENT_KEY', 'AGENT_ENDPOINT'];
         for (const key of required) {
             if (!process.env[key]) {
                 throw new Error(`${key} is required`);

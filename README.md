@@ -36,7 +36,6 @@ The application uses Express Session middleware for secure session handling:
 - Node.js 18 or higher
 - npm
 - A DigitalOcean GenAI Platform account with:
-  - An Agent ID
   - An Agent Key (found in Settings > Endpoint Access Keys)
   - An Agent Endpoint URL
 
@@ -49,7 +48,6 @@ Create a `.env` file in the root directory:
 PORT=3000
 
 # Required environment variables
-AGENT_ID=your-agent-id            # From your Agent's settings
 AGENT_KEY=your-agent-key         # Created in Settings > Endpoint Access Keys
 AGENT_ENDPOINT=your-agent-endpoint # Your agent's endpoint URL (must end with /api/v1/)
 SESSION_SECRET=your-secret-key    # Long random string for session security
@@ -110,7 +108,7 @@ To deploy this application on DigitalOcean:
    - Create an AI Agent in your DigitalOcean account
    - Navigate to Settings > Endpoint Access Keys
    - Create a new access key and copy it to your environment variables
-   - Copy the Agent ID and Endpoint URL from the agent settings
+   - Copy the Endpoint URL from the agent settings
 
 For detailed instructions on setting up and using AI Agents, please refer to:
 - [DigitalOcean GenAI Platform Documentation](https://docs.digitalocean.com/products/genai-platform/)
