@@ -78,7 +78,11 @@ document.addEventListener('DOMContentLoaded', () => {
             contentDiv.textContent = content;
         } else {
             // AI messages support markdown
-            contentDiv.innerHTML = marked.parse(content);
+            // Escape <think> tags before markdown parsing
+            const escapedContent = content
+                .replace(/<think>/g, '`<think>`')
+                .replace(/<\/think>/g, '`</think>`');
+            contentDiv.innerHTML = marked.parse(escapedContent);
             // Highlight any code blocks
             contentDiv.querySelectorAll('pre code').forEach((block) => {
                 hljs.highlightElement(block);
@@ -128,7 +132,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentAIMessage.setAttribute('data-content', newContent);
                 
                 const contentDiv = currentAIMessage.querySelector('.message-content');
-                contentDiv.innerHTML = marked.parse(newContent);
+                // Escape <think> tags before markdown parsing
+                const escapedContent = newContent
+                    .replace(/<think>/g, '`<think>`')
+                    .replace(/<\/think>/g, '`</think>`');
+                contentDiv.innerHTML = marked.parse(escapedContent);
                 
                 // Re-highlight code blocks
                 contentDiv.querySelectorAll('pre code').forEach((block) => {
