@@ -13,6 +13,7 @@
     --input-border: #ced4da;
     --input-color: #212529;
     --header-border: #dee2e6;
+    --input-area-bg: #dddddd;
     --code-bg: #ffffff;
     --code-color: #212529;
     --code-border: #e9ecef;
@@ -25,6 +26,7 @@
     /* Dark theme variables - Improved input area contrast */
     --bg-color: #121212;
     --chat-bg: #1e1e1e;
+    --header-bg: #343434;
     --text-color: #ffffff;
     --border-color: #2d2d2d;
     --message-user-bg: #0d6efd;
@@ -36,7 +38,7 @@
     --input-border: #404040;
     --input-color: #ffffff;
     --header-border: #2d2d2d;
-    --input-area-bg: #262626;
+    --input-area-bg:#4B4B4B;
     --code-bg: #1a1a1a;
     --code-color: #ffffff;
     --code-border: #363636;
@@ -53,6 +55,7 @@ html, body {
     color: var(--text-color);
     transition: background-color 0.3s ease, color 0.3s ease;
     overflow: hidden;
+
 }
 
 body {
@@ -66,6 +69,7 @@ body {
     flex-direction: column;
     min-height: 100vh;
     min-height: 100dvh;
+    border: 1px solid var(--border-color);
 }
 
 .row {
@@ -77,8 +81,8 @@ body {
     display: flex;
     flex-direction: column;
     background-color: var(--chat-bg);
-    border: 1px solid var(--border-color);
-    transition: background-color 0.3s ease, border-color 0.3s ease;
+    border: 0px;
+    border-radius: 5px;
     height: 100vh;
     height: 100dvh;
 }
@@ -94,7 +98,9 @@ body {
 .chat-header {
     border-bottom: 1px solid var(--header-border);
     transition: border-color 0.3s ease;
-    background-color: var(--chat-bg);
+    background-color: var(--input-area-bg, var(--chat-bg));
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
 }
 
 .chat-messages {
@@ -116,7 +122,6 @@ body {
     opacity: 1;
     transform: translateY(0);
 }
-
 .message-content {
     padding: 0.75rem 1rem;
     border-radius: 1rem;
@@ -247,7 +252,9 @@ body {
 .chat-input {
     background-color: var(--input-area-bg, var(--chat-bg));
     padding: 0.75rem;
+    border-radius: 5px;
     border-top: 1px solid var(--border-color);
+    border: 1px solid var(--border-color);
     position: relative;
     width: 100%;
     z-index: 1000;
